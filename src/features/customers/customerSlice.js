@@ -3,7 +3,7 @@ const initialStateCustomer = {
   nationalID: '',
   createdAt: '',
 }
-export function customerReducer(state = initialStateCustomer, action) {
+export default function customerReducer(state = initialStateCustomer, action) {
   switch (action.type) {
     case 'customer/createCustomer':
       return {
@@ -22,7 +22,7 @@ export function customerReducer(state = initialStateCustomer, action) {
       return state
   }
 }
-function createCustomer(fullName, nationalID) {
+export function createCustomer(fullName, nationalID) {
   return {
     type: 'customer/createCustomer',
     payload: {
@@ -33,7 +33,7 @@ function createCustomer(fullName, nationalID) {
   }
 }
 
-function updateName(newName) {
+export function updateName(newName) {
   return {
     type: 'customer/updateName',
     payload: newName,
