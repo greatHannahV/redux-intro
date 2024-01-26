@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { deposit, payLoan, requestLoan, withdraw } from './accountSlice'
 
 function AccountOperations() {
@@ -10,17 +10,33 @@ function AccountOperations() {
   const [currency, setCurrency] = useState('USD')
 
   const dispatch = useDispatch()
+  const {
+    loan: currentLoan,
+    loanPurpose: currentLoanPurpose,
+    balance,
+  } = useSelector((store) => store.account)
+  console.log(balance)
 
-  function handleDeposit(amount) {
-    dispatch(deposit(depositAmount))
+  function handleDeposit() {
+    if (!depositAmount) return
+    dispatch(deposit(depositAmount, currency))
+    setDepositAmount('')
+    setCurrency('')
   }
 
-  function handleWithdrawal(amount) {
+  function handleWithdrawal() {
+    if (!withdrawalAmount) return
+
     dispatch(withdraw(withdrawalAmount))
+    setWithdrawalAmount('')
   }
 
-  function handleRequestLoan(amount, purpose) {
+  function handleRequestLoan() {
+    if (!loanAmount || !loanPurpose) return
+
     dispatch(requestLoan(loanAmount, loanPurpose))
+    setLoanAmount('')
+    setLoanPurpose('')
   }
 
   function handlePayLoan() {
@@ -47,11 +63,8 @@ function AccountOperations() {
             <option value="GBP">British Pound</option>
           </select>
 
-          <button onClick={() => handleDeposit(depositAmount)}>
-            Deposit {depositAmount}
-          </button>
+          <button onClick={handleDeposit}>Deposit {depositAmount}</button>
         </div>
-
         <div>
           <label>Withdraw</label>
           <input
@@ -63,7 +76,6 @@ function AccountOperations() {
             Withdraw {withdrawalAmount}
           </button>
         </div>
-
         <div>
           <label>Request loan</label>
           <input
@@ -79,11 +91,14 @@ function AccountOperations() {
           />
           <button onClick={handleRequestLoan}>Request loan</button>
         </div>
-
-        <div>
-          <span>Pay back $X</span>
-          <button onClick={handlePayLoan}>Pay loan</button>
-        </div>
+        {currentLoan > 0 ? (
+          <div>
+            <span>
+              Pay back ${currentLoan}({currentLoanPurpose})
+            </span>
+            <button onClick={handlePayLoan}>Pay loan</button>
+          </div>
+        ) : null}
       </div>
     </div>
   )
