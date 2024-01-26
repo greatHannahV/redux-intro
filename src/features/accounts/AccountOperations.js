@@ -1,19 +1,31 @@
-import { useState } from "react";
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { deposit, payLoan, requestLoan, withdraw } from './accountSlice'
 
 function AccountOperations() {
-  const [depositAmount, setDepositAmount] = useState("");
-  const [withdrawalAmount, setWithdrawalAmount] = useState("");
-  const [loanAmount, setLoanAmount] = useState("");
-  const [loanPurpose, setLoanPurpose] = useState("");
-  const [currency, setCurrency] = useState("USD");
+  const [depositAmount, setDepositAmount] = useState('')
+  const [withdrawalAmount, setWithdrawalAmount] = useState('')
+  const [loanAmount, setLoanAmount] = useState('')
+  const [loanPurpose, setLoanPurpose] = useState('')
+  const [currency, setCurrency] = useState('USD')
 
-  function handleDeposit() {}
+  const dispatch = useDispatch()
 
-  function handleWithdrawal() {}
+  function handleDeposit(amount) {
+    dispatch(deposit(depositAmount))
+  }
 
-  function handleRequestLoan() {}
+  function handleWithdrawal(amount) {
+    dispatch(withdraw(withdrawalAmount))
+  }
 
-  function handlePayLoan() {}
+  function handleRequestLoan(amount, purpose) {
+    dispatch(requestLoan(loanAmount, loanPurpose))
+  }
+
+  function handlePayLoan() {
+    dispatch(payLoan())
+  }
 
   return (
     <div>
@@ -35,7 +47,9 @@ function AccountOperations() {
             <option value="GBP">British Pound</option>
           </select>
 
-          <button onClick={handleDeposit}>Deposit {depositAmount}</button>
+          <button onClick={() => handleDeposit(depositAmount)}>
+            Deposit {depositAmount}
+          </button>
         </div>
 
         <div>
@@ -72,7 +86,7 @@ function AccountOperations() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default AccountOperations;
+export default AccountOperations
