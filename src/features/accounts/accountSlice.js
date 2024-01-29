@@ -2,6 +2,7 @@ const initialStateAccount = {
   balance: 0,
   loan: 0,
   loanPurpose: '',
+  isLoading: false,
 }
 export default function accountReducer(state = initialStateAccount, action) {
   switch (action.type) {
@@ -9,6 +10,7 @@ export default function accountReducer(state = initialStateAccount, action) {
       return {
         ...state,
         balance: state.balance + action.payload,
+        isLoading: false,
       }
 
     case 'account/withdraw':
@@ -32,6 +34,11 @@ export default function accountReducer(state = initialStateAccount, action) {
         loanPurpose: '',
         loan: 0,
       }
+    case 'account/convertingCurrency':
+      return {
+        ...state,
+        isLoading: true,
+      }
 
     default:
       return state
@@ -42,6 +49,7 @@ export function deposit(amount, currency) {
   if (currency === 'USD') return { type: 'account/deposit', payload: amount }
 
   return async function (dispatch, getState) {
+    dispatch({ type: 'account/convertingCurrency' })
     //api call
     try {
       const response = await fetch(
@@ -54,7 +62,7 @@ export function deposit(amount, currency) {
       console.log(data)
       const converted = data.rates.USD
       // return action
-      return { type: 'account/deposit', payload: converted }
+      dispatch({ type: 'account/deposit', payload: converted })
     } catch (error) {
       console.error('Error fetching exchange rate:', error)
       // Handle the error here
